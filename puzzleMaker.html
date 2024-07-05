@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzle Maker</title>
+    <link rel="stylesheet" href="./styles/puzzleMaker.css">
+    <script>
+        function toggleMenu() {
+            //show the hamburger icon when the side panel open or closed
+            //show the side panel when the hamburger icon is clicked
+            //hide the side panel when the hamburger icon is clicked again
+            var sidePanel = document.getElementById("sidePanel");
+            if (sidePanel.style.width === "250px") {
+                sidePanel.style.width = "0";
+            } else {
+                sidePanel.style.width = "250px";
+            }
+        }
+
+        function showCSVEditor() {
+            document.getElementById("csvEditorContainer").classList.add("visible");
+            document.getElementById("csvEditorContainer").classList.remove("hidden");
+            document.getElementById("crossword").classList.add("hidden");
+            document.getElementById("crossword").classList.remove("visible");
+            document.getElementById("crossword-submenu").classList.add("hidden")
+            document.getElementById("csv-submenu").classList.toggle("hidden");
+        }
+
+        function showCrossword() {
+            document.getElementById("crossword").classList.add("visible");
+            document.getElementById("crossword").classList.remove("hidden");
+            document.getElementById("csvEditorContainer").classList.add("hidden");
+            document.getElementById("csvEditorContainer").classList.remove("visible");
+            document.getElementById("csv-submenu").classList.add("hidden");
+            document.getElementById("crossword-submenu").classList.toggle("visible");
+        }
+    </script>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <td>
+                <div class="hamburger-menu">
+                    <div class="hamburger-icon" onclick="toggleMenu()">&#9776;</div>
+                    <div class="side-panel" id="sidePanel">
+                        <div class="hamburger-icon2" onclick="toggleMenu()">&#9776;</div>
+                        <button onclick="showCSVEditor()">CSV Editor</button>
+                        <!-- add a button to load a csv file -->
+                        <!-- put the button in a sub-menu -->
+                        <div id="csv-submenu" class="hidden">
+                            <input type="file" id="csvFileInput" accept=".csv">
+                            <button onclick="saveCSV()">&nbsp;&nbsp;Save CSV</button>
+                            <button onclick="clearCSV()">&nbsp;&nbsp;Clear CSV</button>
+                            <button onclick="addRow()">&nbsp;&nbsp;Add Row</button>
+                            <button onclick="addColumn()">&nbsp;&nbsp;Add Column</button>
+                            <button onclick="deleteRow(row)">&nbsp;&nbsp;Remove Row</button>
+                            <button onclick="removeColumn()">&nbsp;&nbsp;Remove Column</button>
+                            <!--button onclick="sortCSV()">&nbsp;&nbsp;Sort CSV</button>
+                            <button onclick="searchCSV()">&nbsp;&nbsp;Search CSV</button>
+                            <button onclick="filterCSV()">&nbsp;&nbsp;Filter CSV</button-->
+                            <button onclick="pasteText()">&nbsp;&nbsp;Paste Text</button>
+			    <button onclick="generateMathExpression(row)">Generate Math Expression</button> 
+			</div> <button onclick="showCrossword()">Crossword</button>
+                        <div id="crossword-submenu" class="hidden">
+                            <button onclick="grid=generateCrossword()">&nbsp;&nbsp;Generate Crossword</button>
+                            <button onclick="clearCrossword(grid, positions)">&nbsp;&nbsp;Clear Crossword</button>
+                            <button onclick="checkCrossword(grid, positions)">&nbsp;&nbsp;Check Crossword</button>
+                            <button onclick="revealCrossword(grid, positions)">&nbsp;&nbsp;Reveal Crossword</button>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div id="csvEditorContainer" class="hidden">
+			<table id='csvTable'>
+				<tr>
+					<td contentEditable>Term</td>
+					<td contentEditable>Definition</td>
+				</tr>
+			</table>
+                </div>
+            </td>
+            <td>
+
+                <div id="crossword" class="hidden">
+                    <h1>Crossword Puzzle</h1>
+                    <table>
+                        <tr>
+                            <td width='25%'>
+                                <div id="cluesContainer"></div>
+                            </td>
+                            <td>
+                                <div id="crosswordContainer"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+    </table>
+
+    <script src="./js/csvEditor.js"></script>
+    <script src="./js/crossword.js"></script>
+    <script src="./js/numericparser.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,96 @@
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 0 auto;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.crossword-cell {
+    background-color: white;
+    margin: 0;
+    border: none;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    font-size: 20px;
+}
+
+.crossword-cell-empty {
+    background-color: black;
+    border-color: black;
+    margin: 0;
+    border: none;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    font-size: 20px;
+}
+
+.hamburger-menu {
+    position: relative;
+}
+
+.hamburger-icon{
+    font-size: 30px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.hamburger-icon2{
+    font-size: 30px;
+    cursor: pointer;
+    padding: 10px;
+    color: white;
+}
+
+.side-panel {
+    width: 0;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.side-panel button {
+    padding: 10px;
+    text-align: left;
+    border: none;
+    background: none;
+    color: white;
+    width: 100%;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.side-panel button:hover {
+    background-color: #575757;
+}
+
+.content {
+    padding: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: block;
+}
+</style>
