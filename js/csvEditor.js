@@ -53,10 +53,10 @@ function parseCSVString(csv) {
             } else {
                 inQuotes = false;
             }
-        } else if (char === ',' && !inQuotes) {
+        } else if (char === ',' && !inQuotes && cell !== '') {
             row.push(cell);
             cell = '';
-        } else if (char === '\n' && !inQuotes) {
+        } else if (char === '\n' && !inQuotes && cell !== '') {
             row.push(cell);
             rows.push(row);
             row = [];

@@ -546,11 +546,11 @@ function checkAnswers(grid) {
   let answers = [];
   for (let row of grid) {
     for (let cell of row) {
-      answers.push(cell.value);
+      answers.push(cell.value.toLowerCase());
     }
   }
   for (let i = 0; i < answers.length; i++) {
-    if (answers[i] !== words[i]) {
+    if (answers[i].toLowerCase() !== words[i].toLowerCase()) {
       return false;
     }
   }
