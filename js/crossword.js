@@ -41,7 +41,7 @@ function initializeGrid(rows, columns) {
   for (let i = 0; i < rows; i++) {
     grid.push([]);
     for (let j = 0; j < columns; j++) {
-      grid[i].push({value:' ',direction:null});
+      grid[i].push({value:'~',direction:null});
     }
   }
   return grid;
@@ -104,7 +104,7 @@ function addWord(grid, word, position, pmatch) {
 function isEmpty(grid) {
   for (let row of grid) {
     for (let cell of row) {
-      if (cell !== ' ') {
+      if (cell !== '~') {
 	return false;
       }
     }
@@ -161,13 +161,13 @@ function checkFit(grid, word, position, match) {
 	//console.log(direction);
   for (let i = 0; i < word.length; i++) {
     if (direction === 'horizontal') {
-      if (!grid[y] || !grid[y][x+i] || ((x + i > grid[0].length) || (grid[y][x + i].value !== ' ' && grid[y][x + i].value !== word[i]))){
+      if (!grid[y] || !grid[y][x+i] || ((x + i > grid[0].length) || (grid[y][x + i].value !== '~' && grid[y][x + i].value !== word[i]))){
 	  //console.log(word[i] + ":" + grid[y][x+i]);
 	      //console.log("false");
 	return false;
       }
     } else {
-      if (!grid[y + i] || !grid[y + i][x] || ((y + i > grid.length) || (grid[y + i][x].value !== ' ' && grid[y + i][x].value !== word[i]))) {
+      if (!grid[y + i] || !grid[y + i][x] || ((y + i > grid.length) || (grid[y + i][x].value !== '~' && grid[y + i][x].value !== word[i]))) {
 	      //console.log("false");
 	return false;
       }
@@ -198,20 +198,20 @@ function checkAdjacency(grid, word, position, match) {
 	//console.log(match.direction);
   for (let i = 0; i < word.length; i++) {
     if (direction === 'horizontal') {
-      if (grid[y - 1] && grid[y - 1][x + i] && grid[y - 1][x + i].value !== ' ' && grid[y][x + i].value !== word[i]) {
+      if (grid[y - 1] && grid[y - 1][x + i] && grid[y - 1][x + i].value !== '~' && grid[y][x + i].value !== word[i]) {
 	      //console.log("1");
 	return true;
       }
-      if (grid[y + 1] && grid[y + 1][x + i] && grid[y + 1][x + i].value !== ' ' && grid[y][x + i].value !== word[i]) {
+      if (grid[y + 1] && grid[y + 1][x + i] && grid[y + 1][x + i].value !== '~' && grid[y][x + i].value !== word[i]) {
 	      //console.log("2");
 	return true;
       }
     } else {
-      if (grid[y + i][x - 1] && grid[y + i][x - 1].value !== ' ' && grid[y + i][x].value !== word[i]) {
+      if (grid[y + i][x - 1] && grid[y + i][x - 1].value !== '~' && grid[y + i][x].value !== word[i]) {
 	      //console.log("3");
 	return true;
       }
-      if (grid[y + i][x + 1] && grid[y + i][x + 1].value !== ' ' && grid[y + i][x].value !== word[i]) {
+      if (grid[y + i][x + 1] && grid[y + i][x + 1].value !== '~' && grid[y + i][x].value !== word[i]) {
 	      //console.log("4");
 	return true;
       }
@@ -237,9 +237,9 @@ function checkEnds(grid, word, position) {
 	|| !grid[y]
 	|| !grid[y][x - 1]
 	|| !grid[y][x + word.length]
-	|| grid[y][x - 1].value !== ' '
-	|| grid[y ][x].value !== ' '
-	|| grid[y ][x + word.length].value !== ' ') 
+	|| grid[y][x - 1].value !== '~'
+	|| grid[y ][x].value !== '~'
+	|| grid[y ][x + word.length].value !== '~') 
 	
      {
       return true;
@@ -251,8 +251,8 @@ function checkEnds(grid, word, position) {
 	    || !grid[y-1] 
 	    || !grid[y-1][x]
 	    || !grid[y+word.length] 
-	    || grid[y - 1][x].value !== ' ' 
-	    || grid[y + word.length][x].value !== ' ') {
+	    || grid[y - 1][x].value !== '~' 
+	    || grid[y + word.length][x].value !== '~') {
       return true;
     }
   }
@@ -453,12 +453,12 @@ function makeEditableCrossword(grid) {
       });
           
       
-      if (cell.value === ' ') {
+      if (cell.value === '~') {
          input.classList.add('crossword-cell-empty');
       } else {
       }
       //disable the input field if the cell is empty
-         input.disabled = cell.value === ' ';
+         input.disabled = cell.value === '~';
 	 input.value = '';
 	    // add the number of the word to the cell
 	    // the number should be placed in the top left corner of the word
@@ -487,14 +487,14 @@ function makeEditableCrossword(grid) {
 		   //add a style to innerTd1 to make the cell with the number hidden
 		   //add a style to innerTd1 to make the cell with the number not visible
 		   //make the x invisible
-		   if (cell.value !== ' ') {
+		   if (cell.value !== '~') {
 			   innerTd1.style.visibility = 'hidden';
 		   }
 		   innerTd1.backgroundColor = 'black';
 		   innerTd1.color = 'black';
 
 	   }
-		if (cell.value === ' ') {
+		if (cell.value === '~') {
 		   innerTd1.classList.add('crossword-cell-empty');
 		   innerTd2.classList.add('crossword-cell-empty');
 		   innerTd3.classList.add('crossword-cell-empty');
