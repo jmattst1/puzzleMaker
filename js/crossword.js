@@ -810,12 +810,15 @@ function generateCrossword() {
     }
 
     for (let i = 1; i < table.rows.length; i++) {
-        const term = table.rows[i].cells[termColIndex].textContent.trim();
-        const definition = table.rows[i].cells[defColIndex].textContent.trim();
-        if (term && definition) {
-            terms.push(term);
-            definitions.push(definition);
-        }
+	 try{	
+           const term = table.rows[i].cells[termColIndex].textContent.trim();
+           const definition = table.rows[i].cells[defColIndex].textContent.trim();
+           if (term && definition) {
+               terms.push(term);
+               definitions.push(definition);
+           }
+	 } catch(e) {
+	 }
     }
 
     crossword = makeCrossword(terms);
