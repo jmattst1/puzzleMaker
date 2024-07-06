@@ -672,7 +672,7 @@ function checkCrossword(grid, positions) {
       if (direction === 'horizontal') {
 	    console.log(word[i] + " " + getAnswerLetter( x + i, y));
         letters.push(getAnswerLetter(x + i, y));
-	      if (getAnswerLetter(x + i, y) !== word[i]) {
+	      if (getAnswerLetter(x + i, y).toLowerCase() !== word[i].toLowerCase()) {
 		      setColor(x + i, y, 'red');
 	      } else {
 		      setColor(x + i, y, 'lightgreen');
@@ -680,7 +680,7 @@ function checkCrossword(grid, positions) {
       } else {
 	    console.log(word[i] + " " + getAnswerLetter(x, y + i));
 	letters.push(getAnswerLetter(x, y + i));
-	if (getAnswerLetter(x, y + i) !== word[i]) {
+	if (getAnswerLetter(x, y + i).toLowerCase() !== word[i].toLowerCase()) {
 		setColor(x, y + i, 'red');
 	}
 	else {
