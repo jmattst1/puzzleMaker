@@ -755,12 +755,12 @@ function displayDefinitions(terms, definitions, grid, words) {
 		 }
 		 position.number = number;
 	      if (position.direction === 'horizontal') {
-		let li = document.createElement('li');
+		let li = document.createElement('p');
 		li.textContent = number + '. ' + definitions[terms.indexOf(word)];
 		horizontalList.appendChild(li);
 	      } else {
 		cell.direction = 'vertical';
-	        let li = document.createElement('li');
+	        let li = document.createElement('p');
 		li.textContent = number + '. ' + definitions[terms.indexOf(word)];
 		verticalList.appendChild(li);
 	      }

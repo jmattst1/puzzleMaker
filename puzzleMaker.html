@@ -50,19 +50,19 @@
                         <button onclick="showCSVEditor()">CSV Editor</button>
                         <!-- add a button to load a csv file -->
                         <!-- put the button in a sub-menu -->
-                        <div id="csv-submenu" class="hidden">
+                        <div id="csv-submenu" class="visible">
                             <input type="file" id="csvFileInput" accept=".csv">
                             <button onclick="saveCSV()">&nbsp;&nbsp;Save CSV</button>
-                            <button onclick="clearCSV()">&nbsp;&nbsp;Clear CSV</button>
                             <button onclick="addRow()">&nbsp;&nbsp;Add Row</button>
                             <button onclick="addColumn()">&nbsp;&nbsp;Add Column</button>
                             <button onclick="deleteRow(row)">&nbsp;&nbsp;Remove Row</button>
-                            <button onclick="removeColumn()">&nbsp;&nbsp;Remove Column</button>
+                            <!--button onclick="removeColumn()">&nbsp;&nbsp;Remove Column</button-->
                             <!--button onclick="sortCSV()">&nbsp;&nbsp;Sort CSV</button>
                             <button onclick="searchCSV()">&nbsp;&nbsp;Search CSV</button>
                             <button onclick="filterCSV()">&nbsp;&nbsp;Filter CSV</button-->
                             <button onclick="pasteText()">&nbsp;&nbsp;Paste Text</button>
-			    <button onclick="generateMathExpression(row)">Generate Math Expression</button> 
+			    <button onclick="copyUrl()">&nbsp;&nbsp;Copy URL</button>
+			    <button onclick="generateMathExpression(row)">&nbsp;&nbsp;Generate Math&nbsp;&nbsp;&nbsp; Expression</button> 
 			</div> <button onclick="showCrossword()">Crossword</button>
                         <div id="crossword-submenu" class="hidden">
                             <button onclick="grid=generateCrossword()">&nbsp;&nbsp;Generate Crossword</button>
@@ -74,7 +74,7 @@
                 </div>
             </td>
             <td>
-                <div id="csvEditorContainer" class="hidden">
+                <div id="csvEditorContainer" class="visible">
 			<table id='csvTable'>
 				<tr>
 					<td contentEditable>Term</td>
@@ -104,6 +104,22 @@
     <script src="./js/csvEditor.js"></script>
     <script src="./js/crossword.js"></script>
     <script src="./js/numericparser.js"></script>
+    <script src="./js/urlUtils.js"></script>
+    <script>
+	    // after the page loads, generate a crossword puzzle
+	    // make this happen after the page loads
+	    document.addEventListener("DOMContentLoaded", function(event) {
+	    try{
+		let tds=retrieveCsvData();
+		    console.log(tds);
+                if (tds!==undefined) parseTabDelimited(tds);
+	        grid=generateCrossword();
+                showCrossword();
+	    }catch(e){
+		    console.log(e);
+	    }
+	    });
+    </script>
 </body>
 
 </html>

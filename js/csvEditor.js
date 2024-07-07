@@ -277,6 +277,77 @@ function pasteText() {
   });
 }
 
+function parseTabDelimited(value) {
+    let rows = value.split('\n');
+    let table = document.querySelector('#csvEditorContainer table');
+    for (let i = 0; i < rows.length; i++) {
+      let cells = rows[i].split('\t');
+      let tr = table.insertRow(-1);
+      for (let j = 0; j < cells.length; j++) {
+	let td = tr.insertCell(-1);
+        td.contentEditable = 'true';
+	td.textContent = cells[j];
+                td.addEventListener('mousedown', handleMouseDown);
+                td.addEventListener('mouseover', handleMouseOver);
+                td.addEventListener('mouseup', handleMouseUp);
+                td.addEventListener('blur', saveRow); 
+      }
+    }
+  };
+// create a function to read the text from the csv editor and make a tab-delimited string
+// the function should return the tab-delimited string
+function readText() {
+  let table = document.querySelector('#csvEditorContainer table');
+  let text = '';
+  for (let i = 0; i < table.rows.length; i++) {
+    let row = table.rows[i];
+    for (let j = 0; j < row.cells.length; j++) {
+      text += row.cells[j].textContent;
+      if (j < row.cells.length - 1) {
+	text += '\t';
+      }
+    }
+    if (i < table.rows.length - 1) {
+      text += '\n';
+    }
+  }
+  return text;
+}
+
+// create a function to create a url parameter from the tab-delimited string
+function createUrlParameter() {
+  let text = readText();
+  let urlParameter = tabDelimitedStringToUrlParameter(text, 'tabDelimitedString');
+  return urlParameter;
+}
+
+// create a function to make a url from the url parameter
+// the function should return the url
+function makeUrl() {
+  let urlParameter = createUrlParameter();
+  let url = window.location.href.split('?')[0] + '?' + urlParameter;
+  return url;
+}
+
+// create a function to copy the url to the clipboard
+function copyUrl() {
+  let url = makeUrl();
+  navigator.clipboard.writeText(url).then(function() {
+    alert('URL copied to clipboard');
+  });
+}
+
+// create a function to retrieve the tab delimited data from the url parameter
+// and put it in the csv editor
+// the function should parse the tab-delimited string from the url parameter
+
+function retrieveCsvData() {
+  let tabDelimitedString = getParameterFromUrl('tabDelimitedString');
+  return tabDelimitedString;
+}
+
+
+//
 // create a function to delete a row from the table 
 // the row is the row that contains the active cell
 // the following is not working

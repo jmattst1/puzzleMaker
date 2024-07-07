@@ -70,7 +70,7 @@ console.log(parser.parse()); // Output: -13
 //
 //write a function to generate expressions to be parsed by the parser
 
-function generateExpression(depth = 2) {
+function generateExpression(depth = 1) {
     const operators = ['+', '-', '*'];
     const maxNumber = 10;
 
