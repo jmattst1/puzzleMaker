@@ -119,6 +119,16 @@
 		    console.log(e);
 	    }
 	    });
+	    // add a listener to close the side panel when the user clicks outside of it
+	    window.addEventListener('click', function(event) {
+		var sidePanel = document.getElementById("sidePanel");
+		    // if the target of the click isn't the side panel nor a descendant of the side panel
+		    // nor the hamburger icon, close the side panel
+		    if (!sidePanel.contains(event.target) && event.target.className !== "hamburger-icon")
+
+		    sidePanel.style.width = "0";
+	    });
+         
     </script>
 </body>
 
