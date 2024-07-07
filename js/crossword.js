@@ -366,7 +366,7 @@ function findWordAtPosition(grid, x, y) {
 
 // write a function to set a variable to a direction
 
-function n (nextInput, direction) {
+function next (nextInput, direction) {
 	  if (nextInput && !nextInput.disabled) {
 	    nextInput.focus();
 	    priorDirection = direction;
@@ -421,7 +421,52 @@ function makeEditableCrossword(grid) {
       // the listener should check if the next input field is disabled
       // if the next input field is disabled, the focus should move to the closest vertical
       // or horizontal input field that is not disabled
-      
+      // if the input is a backspace, the focus should move to the previous input field 
+      // in the same row if the word is horizontal. If the word is vertical, the focus should
+      // move to the previous input field in the same column 
+      input.addEventListener('keydown', function(event) {
+	if (event.key === 'Backspace') {
+	  let priorInput;
+	  let direction = grid[j][i].direction;
+	  if (priorDirection !== undefined) {
+	    direction = priorDirection;
+	  }
+		input.value = '';
+	  document.getElementById(j + '.' + i).innerText = ' ';
+	  if (direction === 'horizontal') {
+	    priorInput = document.getElementById(j + '.' + (i - 1));
+	  } else {
+	    priorInput = document.getElementById((j - 1) + '.' + i);
+	  }
+	  next(priorInput, direction);
+	  // do not allow the backspace to delete character in the previous cell
+	  event.preventDefault();
+	}
+	    // if the key is an arrow key, move the focus to the next input field  
+	    // the following is not working
+	      // if the key is an arrow key, move the focus to the next input field
+	else if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+	  let nextInput;
+	  let direction;
+	  if (event.key === 'ArrowUp') {
+	    nextInput = document.getElementById((j - 1) + '.' + i);
+		  direction = 'vertical';
+	  }
+	  else if (event.key === 'ArrowDown') {
+	    nextInput = document.getElementById((j + 1) + '.' + i);
+		  direction = 'vertical';
+	  }
+	  else if (event.key === 'ArrowLeft') {
+	    nextInput = document.getElementById(j + '.' + (i - 1));
+		  direction = 'horizontal';
+	  }
+	  else if (event.key === 'ArrowRight') {
+	    nextInput = document.getElementById(j + '.' + (i + 1));
+		  direction = 'horizontal';
+	  }
+	  next(nextInput, direction);
+	}
+      });
       input.addEventListener('input', function() {
 	if (input.value.length > 0) {
 		//console.log(cell + " " + i + " " + j);
@@ -448,7 +493,7 @@ function makeEditableCrossword(grid) {
 	    d = 'vertical';
 	    nextInput = document.getElementById((j + 1) + '.' + i);
 	  } 
-	  n(nextInput, d);
+	  next(nextInput, d);
 	}
       });
           
