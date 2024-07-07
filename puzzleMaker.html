@@ -50,7 +50,7 @@
                         <button onclick="showCSVEditor()">CSV Editor</button>
                         <!-- add a button to load a csv file -->
                         <!-- put the button in a sub-menu -->
-                        <div id="csv-submenu" class="visible">
+                        <div id="csv-submenu" class="hidden">
                             <input type="file" id="csvFileInput" accept=".csv">
                             <button onclick="saveCSV()">&nbsp;&nbsp;Save CSV</button>
                             <button onclick="addRow()">&nbsp;&nbsp;Add Row</button>
@@ -74,7 +74,7 @@
                 </div>
             </td>
             <td>
-                <div id="csvEditorContainer" class="visible">
+                <div id="csvEditorContainer" class="hidden">
 			<table id='csvTable'>
 				<tr>
 					<td contentEditable>Term</td>
