@@ -1,5 +1,9 @@
 <style>
+/* make the space between paragraphs smaller */
 
+p {
+	line-height: .5;
+}
 body {
     font-family: Arial, sans-serif;
     margin: 0;
