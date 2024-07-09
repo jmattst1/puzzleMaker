@@ -5,13 +5,17 @@
 // - letter: the common letter
 // - index1: the index of the letter in word1
 // - index2: the index of the letter in word2
+let associations = {};
+let wordNumber = {};
 let remainingWords = [];
 let terms = [];
 let positions= [];
-let priorDirection = 'horizontal';
+let priorDirection;
 let grid = [];
 let termColIndex;
 let defColIndex;
+let definitions = [];
+let crosswordGrid = [];
 
 function findCommonLetters(word1, word2,direction) {
   let matches = [];
@@ -363,14 +367,93 @@ function findWordAtPosition(grid, x, y) {
   return undefined;
 }
 
+// write a function to associate every cell in the grid with a word
+// if the cell is part of a word, the function should associate the cell with the word
+// if the cell is part of two words, the function should associate the cell with both words
+// the association should also include the direction of the word
+//
+function associateWords(grid) {
+  for (let word of terms) {
+    try {
+	    let hdef;
+	    let vdef;
+       let position = findWordPosition(word);
+       let x = position.x;
+       let y = position.y;
+       let direction = position.direction;
+       for (let i = 0; i < word.length; i++) {
+         if (direction === 'horizontal') {
+		 if (associations[y +'.' + (x+i)]) { let elem = associations[y +'.' + (x+i)];
+			 vdef = elem.verticalDefinition;
+		 }
+		 associations[y +'.' + (x+i)]= ({ word: word, horizontalDefinition: definitions[terms.indexOf(word)], verticalDefinition:vdef, direction: direction});
+         } else if (direction === 'vertical'){
+		 if (associations[(y+i) +'.' + x]) { let elem = associations[(y+i) +'.' + x]; 
+		    hdef = elem.horizontalDefinition;
+		 }
+		 associations[(y+i) +'.' + x]= ({ word: word, horizontalDefinition: hdef, verticalDefinition: definitions[terms.indexOf(word)], direction: direction});
+         }
+       }
+    }
+    catch(e) {
+    }
+	  // log the associations object to the console
+	  //console.log(associations);
+  }
+}
+
+// write a function to get the direction from a cell in the grid
+// this function should take in the x and y coordinates of the cell
+// and the grid and return the direction of the word that contains the cell
+function getDirectionForMotion(x, y, grid) {
+  let cell = grid[x][y];
+  if (priorDirection ){
+    return priorDirection;
+  }
+  return cell.direction;
+}
+
+// write a function to display the definition of the word when the cell has the focus
+// the listener should display the definition of the word in a div with the id 'definition'
+function displayDefinition(event) {
+  let definition = document.getElementById('definition');
+  definition.textContent = '';
+  let elem = event.target.id;
+  let x=parseInt(elem.split('.')[1]);
+  let y=parseInt(elem.split('.')[0]);
+  let direction = getDirectionForMotion(x, y, crosswordGrid);
+	//console.log(direction);
+  if (direction === 'horizontal') {
+    def = associations[elem].horizontalDefinition;
+    if (def) {
+       let word = associations[elem].word;
+       let wordNum = wordNumber[word];
+       let wordDef = '<b>Across</b><br>' + wordNum + '. ' + def;
+       definition.innerHTML = wordDef;
+    }
+  }
+  else if (direction === 'vertical') {
+    let def = associations[elem].verticalDefinition;
+    if (def) {
+      let word = associations[elem].word;
+      let wordNum = wordNumber[word];
+      definition.innerHTML = '<b>Down</b><br>' + wordNum + '. ' + def;
+    }	
+  }
+}
 
 // write a function to set a variable to a direction
 
 function next (nextInput, direction) {
 	  if (nextInput && !nextInput.disabled) {
 	    nextInput.focus();
-	    priorDirection = direction;
+	    priorDirection = getDirectionForMotion(parseInt(nextInput.id.split('.')[1]), parseInt(nextInput.id.split('.')[0]), crosswordGrid);
+	    selectAll(nextInput);
 	  }
+}
+
+function selectAll(target) {
+	target.setSelectionRange(0, target.value.length);
 }
 
 // write a function to make an editable crossword puzzle
@@ -412,6 +495,9 @@ function makeEditableCrossword(grid) {
       // the id should be the x and y coordinates of the cell
       input.id = j + '.' + i;
 
+      // add a listener to the input field to display the definition of the word
+      input.addEventListener('focus', displayDefinition);
+      
       // add a listener to the input field
       // to move the focus to the next input field when a character is entered
       // the focus should move to the next input field in the same row if the 
@@ -450,19 +536,19 @@ function makeEditableCrossword(grid) {
 	  let direction;
 	  if (event.key === 'ArrowUp') {
 	    nextInput = document.getElementById((j - 1) + '.' + i);
-		  direction = 'vertical';
+		  priorDirection = direction = 'vertical';
 	  }
 	  else if (event.key === 'ArrowDown') {
 	    nextInput = document.getElementById((j + 1) + '.' + i);
-		  direction = 'vertical';
+		  priorDirection = direction = 'vertical';
 	  }
 	  else if (event.key === 'ArrowLeft') {
 	    nextInput = document.getElementById(j + '.' + (i - 1));
-		  direction = 'horizontal';
+		  priorDirection = direction = 'horizontal';
 	  }
 	  else if (event.key === 'ArrowRight') {
 	    nextInput = document.getElementById(j + '.' + (i + 1));
-		  direction = 'horizontal';
+		  priorDirection = direction = 'horizontal';
 	  }
 	  next(nextInput, direction);
 	}
@@ -474,11 +560,10 @@ function makeEditableCrossword(grid) {
 	  let d;
 	  let nextInput;
 	  let direction = grid[j][i].direction;
-		console.log(direction);
-		console.log(priorDirection);
-          
+		//console.log(direction);
+		//console.log(priorDirection);
 
-	  if (priorDirection !== undefined) {
+	  if (priorDirection) {
 	    d = priorDirection;
 	    if (priorDirection === 'horizontal') {
 	      nextInput = document.getElementById(j + '.' + (i + 1));
@@ -487,12 +572,13 @@ function makeEditableCrossword(grid) {
 	    }
 	  }
 	  else if ( direction === 'horizontal') {
-	    d = 'horizontal';
+	    priorDirection = d = 'horizontal';
 	    nextInput = document.getElementById(j + '.' + (i + 1));
 	  } else if (direction === 'vertical'){
-	    d = 'vertical';
+	    priorDirection = d = 'vertical';
 	    nextInput = document.getElementById((j + 1) + '.' + i);
 	  } 
+	
 	  next(nextInput, d);
 	}
       });
@@ -609,12 +695,12 @@ function checkAnswers(grid) {
 
 function clearCrossword(grid, positions) {
   for (let word in positions) {
-	  console.log(word);
+	  //console.log(word);
     let position = positions[word];
     let x = position.x;
     let y = position.y;
     let direction = position.direction;
-	  console.log(position);
+	  //console.log(position);
     for (let i = 0; i < word.length; i++) {
       if (direction === 'horizontal') {
 	setLetter(x + i, y, ' ');
@@ -651,9 +737,9 @@ function clearCrossword(grid, positions) {
 document.addEventListener('focusin', function(event) {
   if (event.target.tagName === 'INPUT') {
 	  try {
-    priorDirection = undefined;
-	  document.activeElement.selectionStart = 0;
-	  document.activeElement.selectionEnd = document.activeElement.value.length;
+	     priorDirection = getDirectionForMotion(parseInt(event.target.id.split('.')[1]), parseInt(event.target.id.split('.')[0]), crosswordGrid); 
+	     document.activeElement.selectionStart = 0;
+	     document.activeElement.selectionEnd = document.activeElement.value.length;
 	  } catch(e) {
 	  }
   }
@@ -707,7 +793,7 @@ function setColor(x, y, color) {
 function checkCrossword(grid, positions) {
   let retval = true;
   for (let word in positions) {
-	  console.log(word);
+	  //console.log(word);
     let position = positions[word];
     let x = position.x;
     let y = position.y;
@@ -715,7 +801,7 @@ function checkCrossword(grid, positions) {
     let letters = [];
     for (let i = 0; i < word.length; i++) {
       if (direction === 'horizontal') {
-	    console.log(word[i] + " " + getAnswerLetter( x + i, y));
+	    //console.log(word[i] + " " + getAnswerLetter( x + i, y));
         letters.push(getAnswerLetter(x + i, y));
 	      if (getAnswerLetter(x + i, y).toLowerCase() !== word[i].toLowerCase()) {
 		      setColor(x + i, y, 'red');
@@ -723,7 +809,7 @@ function checkCrossword(grid, positions) {
 		      setColor(x + i, y, 'lightgreen');
 	      }
       } else {
-	    console.log(word[i] + " " + getAnswerLetter(x, y + i));
+	    //console.log(word[i] + " " + getAnswerLetter(x, y + i));
 	letters.push(getAnswerLetter(x, y + i));
 	if (getAnswerLetter(x, y + i).toLowerCase() !== word[i].toLowerCase()) {
 		setColor(x, y + i, 'red');
@@ -733,7 +819,7 @@ function checkCrossword(grid, positions) {
 	}
       }
     }
-	  console.log(letters.join(''));
+	  //console.log(letters.join(''));
     let checkWord = letters.join('');
     if (checkWord !== word) {
       retval = false;
@@ -748,7 +834,7 @@ function checkCrossword(grid, positions) {
 // and display the solution of the crossword puzzle
 function revealCrossword(grid, positions) {
   for (let word in positions) {
-	  console.log(word);
+	  //console.log(word);
     let position = positions[word];
     let x = position.x;
     let y = position.y;
@@ -797,6 +883,7 @@ function displayDefinitions(terms, definitions, grid, words) {
 			 number++;
 		         grid[j][i].number = number;
 	                 numbers[j + "." + i] = number;
+			 wordNumber[word] = number;
 		 }
 		 position.number = number;
 	      if (position.direction === 'horizontal') {
@@ -833,7 +920,6 @@ function generateCrossword() {
     priorDirection = 'horizontal';
     grid = [];
 
-    const definitions = [];
     const headerRow = table.rows[0];
 
     termColIndex = -1;
@@ -858,7 +944,7 @@ function generateCrossword() {
 	 try{	
            const term = table.rows[i].cells[termColIndex].textContent.trim();
            const definition = table.rows[i].cells[defColIndex].textContent.trim();
-           if (term && definition) {
+           if (term && definition && !(term==='Term' && definition==='Definition')) {
                terms.push(term);
                definitions.push(definition);
            }
@@ -869,5 +955,6 @@ function generateCrossword() {
     crossword = makeCrossword(terms);
     crossword = displayDefinitions(terms, definitions, crossword);
     makeEditableCrossword(crossword);
-    return crossword;
+    associateWords(crossword);
+    crosswordGrid= crossword;
 }

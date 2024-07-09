@@ -58,7 +58,10 @@ function parseCSVString(csv) {
             cell = '';
         } else if (char === '\n' && !inQuotes && cell !== '') {
             row.push(cell);
-            rows.push(row);
+	    if (row[0].toLowerCase() !== 'term' && row[1].toLowerCase() !== 'definition') {
+	       console.log(row);
+               rows.push(row);
+	    }
             row = [];
             cell = '';
         } else {
@@ -130,7 +133,7 @@ function addRow() {
 saveRow = function(event) {
   let cell = event.target;
   row = cell.parentElement;
-	console.log(row);
+	//console.log(row);
 }
 
 function addColumn() {

@@ -1,8 +1,20 @@
-<style>
-/* make the space between paragraphs smaller */
+/* make defDisplay float left of input fields */
+.defDisplay { 
+    font-size: 30px;
+}
 
+
+
+.hamburger-icon2 {
+    padding: 0;
+    margin: 0;
+    vertical-align: top;
+}
+/* make the space between paragraphs smaller */
 p {
-	line-height: .5;
+	line-height: 1.25;
+	padding: 1;
+	margin: 0;
 }
 body {
     font-family: Arial, sans-serif;
@@ -46,6 +58,7 @@ table {
 }
 
 .hamburger-icon{
+
     font-size: 30px;
     cursor: pointer;
     padding: 10px;
@@ -97,4 +110,3 @@ table {
 .visible {
     display: block;
 }
-</style>

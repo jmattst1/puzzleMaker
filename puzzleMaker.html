@@ -42,9 +42,13 @@
 <body>
     <table>
         <tr>
+		<td>
+           <div class="hamburger-icon" onclick="toggleMenu()">&#9776;</div>
+		</td>
+	</tr>
+	<tr>
             <td>
                 <div class="hamburger-menu">
-                    <div class="hamburger-icon" onclick="toggleMenu()">&#9776;</div>
                     <div class="side-panel" id="sidePanel">
                         <div class="hamburger-icon2" onclick="toggleMenu()">&#9776;</div>
                         <button onclick="showCSVEditor()">CSV Editor</button>
@@ -93,6 +97,7 @@
                                 <div id="cluesContainer"></div>
                             </td>
                             <td>
+			        <div id="definition" class="defDisplay"></div>
                                 <div id="crosswordContainer"></div>
                             </td>
                         </tr>
