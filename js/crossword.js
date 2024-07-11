@@ -11,11 +11,13 @@ let remainingWords = [];
 let terms = [];
 let positions= [];
 let priorDirection;
+let priorElement;
 let grid = [];
 let termColIndex;
 let defColIndex;
 let definitions = [];
 let crosswordGrid = [];
+let clicked;
 
 function findCommonLetters(word1, word2,direction) {
   let matches = [];
@@ -350,7 +352,7 @@ function findWordAtPosition(grid, x, y) {
   // if the position is within the range of the word, return the word
   // if the position is not within the range of the word, return undefined
   // if the position is within the range of 2 words, return both words
-  for (let word of words) {
+  for (let word of terms) {
     let position = findWordPosition(word);
     if (position) {
     if (position.direction === 'horizontal') {
@@ -405,49 +407,58 @@ function associateWords(grid) {
 // write a function to get the direction from a cell in the grid
 // this function should take in the x and y coordinates of the cell
 // and the grid and return the direction of the word that contains the cell
-function getDirectionForMotion(x, y, grid) {
-  let cell = grid[x][y];
-  if (priorDirection ){
-    return priorDirection;
+// the function should return 'horizontal' if the word is horizontal
+// the function should return 'vertical' if the word is vertical
+// the function should return priorDirection if the word is part of a word that is both horizontal and vertical
+//
+function getDirection(grid, x, y, event) {
+  let direction;
+	console.log(clicked);
+	console.log(event.key);
+  if (priorDirection && !clicked && event.key !== 'Tab') {
+     direction = priorDirection;
+  } else {
+	  if (grid[y][x].direction === 'both') {
+	    direction = 'horizontal';
+	  } else {
+            direction = grid[y][x].direction;
+          }
+	  clicked = false;
   }
-  return cell.direction;
+    console.log(direction);
+  return direction;
 }
+
 
 // write a function to display the definition of the word when the cell has the focus
 // the listener should display the definition of the word in a div with the id 'definition'
+// the listener should display the horizontal definition if the word is horizontal
+// the listener should display the vertical definition if the word is vertical
+
 function displayDefinition(event) {
-  let definition = document.getElementById('definition');
-  definition.textContent = '';
-  let elem = event.target.id;
-  let x=parseInt(elem.split('.')[1]);
-  let y=parseInt(elem.split('.')[0]);
-  let direction = getDirectionForMotion(x, y, crosswordGrid);
-	//console.log(direction);
-  if (direction === 'horizontal') {
-    def = associations[elem].horizontalDefinition;
-    if (def) {
-       let word = associations[elem].word;
-       let wordNum = wordNumber[word];
-       let wordDef = '<b>Across</b><br>' + wordNum + '. ' + def;
-       definition.innerHTML = wordDef;
+  let x = parseInt(event.target.id.split('.')[1]);
+  let y = parseInt(event.target.id.split('.')[0]);
+  let direction = getDirection(crosswordGrid, x, y, event);
+  let word = findWordAtPosition(terms, y, x);
+  let definition;
+  if (word) {
+    if (direction === 'horizontal') {
+      definition = associations[y + '.' + x].horizontalDefinition;
+    } else {
+      definition = associations[y + '.' + x].verticalDefinition;
     }
   }
-  else if (direction === 'vertical') {
-    let def = associations[elem].verticalDefinition;
-    if (def) {
-      let word = associations[elem].word;
-      let wordNum = wordNumber[word];
-      definition.innerHTML = '<b>Down</b><br>' + wordNum + '. ' + def;
-    }	
-  }
+  let definitionDiv = document.getElementById('definition');
+  definitionDiv.textContent = definition;
 }
 
 // write a function to set a variable to a direction
 
 function next (nextInput, direction) {
-	  if (nextInput && !nextInput.disabled) {
+	  if (nextInput){
+		  let x = parseInt(nextInput.id.split('.')[1]);
+		  let y = parseInt(nextInput.id.split('.')[0]);
 	    nextInput.focus();
-	    priorDirection = getDirectionForMotion(parseInt(nextInput.id.split('.')[1]), parseInt(nextInput.id.split('.')[0]), crosswordGrid);
 	    selectAll(nextInput);
 	  }
 }
@@ -496,8 +507,25 @@ function makeEditableCrossword(grid) {
       input.id = j + '.' + i;
 
       // add a listener to the input field to display the definition of the word
-      input.addEventListener('focus', displayDefinition);
-      
+
+  input.addEventListener('focus', function(event) {
+  if (event.target.tagName === 'INPUT') {
+	  try {
+		if (priorDirection !== null) {
+                   direction = priorDirection;
+		}
+		else {
+		   x = parseInt(event.target.id.split('.')[1]);
+		   y = parseInt(event.target.id.split('.')[0]);
+		   direction = getDirection(crosswordGrid, x, y, event);
+		}
+	     document.activeElement.selectionStart = 0;
+	     document.activeElement.selectionEnd = document.activeElement.value.length;
+	  } catch(e) {
+	  }
+  }
+      //displayDefinition(event);
+});
       // add a listener to the input field
       // to move the focus to the next input field when a character is entered
       // the focus should move to the next input field in the same row if the 
@@ -553,36 +581,41 @@ function makeEditableCrossword(grid) {
 	  next(nextInput, direction);
 	}
       });
-      input.addEventListener('input', function() {
+      input.addEventListener('input', function(event) {
+	direction = getDirection(crosswordGrid, i, j, event);
 	if (input.value.length > 0) {
 		//console.log(cell + " " + i + " " + j);
 
 	  let d;
 	  let nextInput;
-	  let direction = grid[j][i].direction;
-		//console.log(direction);
-		//console.log(priorDirection);
 
-	  if (priorDirection) {
-	    d = priorDirection;
-	    if (priorDirection === 'horizontal') {
-	      nextInput = document.getElementById(j + '.' + (i + 1));
-	    } else if (priorDirection === 'vertical'){
-	      nextInput = document.getElementById((j + 1) + '.' + i);
-	    }
-	  }
-	  else if ( direction === 'horizontal') {
+	  if ( direction === 'horizontal') {
 	    priorDirection = d = 'horizontal';
 	    nextInput = document.getElementById(j + '.' + (i + 1));
 	  } else if (direction === 'vertical'){
 	    priorDirection = d = 'vertical';
 	    nextInput = document.getElementById((j + 1) + '.' + i);
 	  } 
-	
+	  else if (direction === 'both') {
+	    if (priorDirection === 'horizontal') {
+	      d = 'horizontal';
+	      nextInput = document.getElementById(j + '.' + (i + 1));
+	    } else if (priorDirection === 'vertical') {
+	      priorDirection = d = 'vertical';
+	      nextInput = document.getElementById((j + 1) + '.' + i);
+	    }
+	  }
 	  next(nextInput, d);
 	}
       });
-          
+      // add an event listener to set the clicked variable to true
+      // when the input field gets the mousedown event
+      input.addEventListener('mousedown', function(event) {
+	clicked = true;
+	priorDirection = getDirection(crosswordGrid, i, j, event);
+	console.log('clicked');
+      });
+
       
       if (cell.value === '~') {
          input.classList.add('crossword-cell-empty');
@@ -733,17 +766,6 @@ function clearCrossword(grid, positions) {
 // add an event listener to the document to set priorDirection to null when and element is clicked
 // if the element gets focus by way of mouse set priorDirection to undefined
 // if the element gets focus by way of keyboard leave priorDirection as is
-
-document.addEventListener('focusin', function(event) {
-  if (event.target.tagName === 'INPUT') {
-	  try {
-	     priorDirection = getDirectionForMotion(parseInt(event.target.id.split('.')[1]), parseInt(event.target.id.split('.')[0]), crosswordGrid); 
-	     document.activeElement.selectionStart = 0;
-	     document.activeElement.selectionEnd = document.activeElement.value.length;
-	  } catch(e) {
-	  }
-  }
-});
 
 // create a function to determine the letter that should be at a position in the grid
 // this function should take in the grid, the x and y coordinates of the position
@@ -917,7 +939,6 @@ function generateCrossword() {
     remainingWords = [];
     terms = [];
     positions= [];
-    priorDirection = 'horizontal';
     grid = [];
 
     const headerRow = table.rows[0];
