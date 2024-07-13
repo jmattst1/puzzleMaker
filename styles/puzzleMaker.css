@@ -6,14 +6,27 @@ body {
     padding: 0;
 }
 
+
 table {
     border-collapse: collapse;
-    margin: 0 auto;
+    margin: 0 ;
     border: 0;
     padding: 0;
     margin: 0;
 }
 
+.editor {
+    font-size: 40px;
+    border: 1px solid black;
+    margin: 0;
+    padding: 0;
+}
+
+.editor td {
+    border: 1px solid black;
+    padding: 0;
+    margin: 0;
+}
 .crossword-cell {
     background-color: white;
     margin: 0;
@@ -21,7 +34,7 @@ table {
     padding: 0;
     width: 20px;
     height: 20px;
-    text-align: right;
+    text-align: center;
     font-size: 20px;
 }
 
@@ -33,7 +46,7 @@ table {
     padding: 0;
     width: 20px;
     height: 20px;
-    text-align: center;
+    text-align: right;
     font-size: 20px;
 }
 
@@ -73,7 +86,7 @@ table {
     background: none;
     color: white;
     width: 100%;
-    font-size: 20px;
+    font-size: 40px;
     cursor: pointer;
     transition: 0.3s;
 }

@@ -31,7 +31,10 @@ function parseCSV(contents) {
             }
             tr.appendChild(td);
         });
+	addInsertRowIcon(tr);
+	addDeleteRowIcon(tr);
         table.appendChild(tr);
+
     });
     document.getElementById('csvEditorContainer').innerHTML = '';
     document.getElementById('csvEditorContainer').appendChild(table);
@@ -58,8 +61,7 @@ function parseCSVString(csv) {
             cell = '';
         } else if (char === '\n' && !inQuotes && cell !== '') {
             row.push(cell);
-	    if (row[0].toLowerCase() !== 'term' && row[1].toLowerCase() !== 'definition') {
-	       console.log(row);
+	    if (row[0].toLowerCase() !== 'term' || row[1].toLowerCase() !== 'definition') {
                rows.push(row);
 	    }
             row = [];
@@ -122,6 +124,8 @@ function addRow() {
         td.addEventListener('blur', saveRow); 
         tr.appendChild(td);
     }
+    addInsertRowIcon(tr);
+    addDeleteRowIcon(tr);
     table.appendChild(tr);
 }
 
@@ -295,6 +299,8 @@ function parseTabDelimited(value) {
                 td.addEventListener('mouseup', handleMouseUp);
                 td.addEventListener('blur', saveRow); 
       }
+      addInsertRowIcon(tr);
+      addDeleteRowIcon(tr);
     }
   };
 // create a function to read the text from the csv editor and make a tab-delimited string
@@ -396,6 +402,7 @@ function generateMathExpression(row) {
     alert('Column "Definition" not found');
     return;
   }
+  
   let cell = lastRow.cells[termColIndex];
   let expression = generateExpression();
   // strip spaces from the expression
@@ -405,4 +412,45 @@ function generateMathExpression(row) {
   let definitionCell = lastRow.cells[definitionColIndex];
   let answer = parser.parse();
   definitionCell.textContent = answer;
+  addInsertRowIcon(lastRow);
+  addDeleteRowIcon(lastRow);
 }
+
+// create an icon on the end of each row to delete the row
+// also create an icon on the end of each row to insert a row above the row
+function addDeleteRowIcon(row) {
+  let deleteIcon = document.createElement('span');
+  deleteIcon.textContent = '❌';
+  deleteIcon.style.cursor = 'pointer';
+  deleteIcon.addEventListener('click', function() {
+    deleteRow(row);
+  });
+  row.appendChild(deleteIcon);
+}
+
+function addInsertRowIcon(row) {
+  let insertIcon = document.createElement('span');
+  insertIcon.textContent = '➕';
+  insertIcon.style.cursor = 'pointer';
+  insertIcon.addEventListener('click', function() {
+    insertRow(row);
+  });
+  row.appendChild(insertIcon);
+}
+
+function insertRow(row) {
+  let table = document.querySelector('#csvEditorContainer table');
+  let newRow = table.insertRow(row.rowIndex);
+  for (let i = 0; i < row.cells.length; i++) {
+    let cell = newRow.insertCell(-1);
+    cell.contentEditable = 'true';
+    cell.addEventListener('mousedown', handleMouseDown);
+    cell.addEventListener('mouseover', handleMouseOver);
+    cell.addEventListener('mouseup', handleMouseUp);
+    cell.addEventListener('blur', saveRow); 
+  }
+  addInsertRowIcon(newRow);
+  addDeleteRowIcon(newRow);
+}
+
+

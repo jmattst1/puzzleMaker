@@ -71,9 +71,9 @@ console.log(parser.parse()); // Output: -13
 //write a function to generate expressions to be parsed by the parser
 
 function generateExpression(depth = 1) {
-    const operators = ['+', '-', '*'];
-    const maxNumber = 10;
-
+    const operators = ['+', '-', '*', '/'];
+    const maxNumber = 100;
+    
     function getRandomInt(max) {
         return Math.floor(Math.random() * max);
     }
@@ -97,8 +97,14 @@ function generateExpression(depth = 1) {
             return `${left} ${operator} ${right}`;
         }
     }
-
-    return generateSubExpression(depth);
+   // generate a sub expression until it evaluates to a whole number
+    let result = null;
+    let expression = null;
+    while (result === null || !Number.isInteger(result)) {
+	expression = generateSubExpression(depth);
+	result = new Parser(expression).parse();
+    }
+    return expression;
 }
 
 // Example usage:

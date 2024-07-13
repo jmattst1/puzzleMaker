@@ -12,10 +12,10 @@
             //show the side panel when the hamburger icon is clicked
             //hide the side panel when the hamburger icon is clicked again
             var sidePanel = document.getElementById("sidePanel");
-            if (sidePanel.style.width === "250px") {
+            if (sidePanel.style.width === "400px") {
                 sidePanel.style.width = "0";
             } else {
-                sidePanel.style.width = "250px";
+                sidePanel.style.width = "400px";
             }
         }
 
@@ -66,10 +66,10 @@
                             <button onclick="filterCSV()">&nbsp;&nbsp;Filter CSV</button-->
                             <button onclick="pasteText()">&nbsp;&nbsp;Paste Text</button>
 			    <button onclick="copyUrl()">&nbsp;&nbsp;Copy URL</button>
-			    <button onclick="generateMathExpression(row)">&nbsp;&nbsp;Generate Math&nbsp;&nbsp;&nbsp; Expression</button> 
+			    <button onclick="generateMathExpression(row)">&nbsp;&nbsp;Generate Math<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expression</button> 
 			</div> <button onclick="showCrossword()">Crossword</button>
                         <div id="crossword-submenu" class="hidden">
-                            <button onclick="grid=generateCrossword()">&nbsp;&nbsp;Generate Crossword</button>
+				<button onclick="grid=generateCrossword()">&nbsp;&nbsp;Generate<br>&nbsp;&nbsp;&nbsp;&nbsp;Crossword</button>
                             <button onclick="clearCrossword(grid, positions)">&nbsp;&nbsp;Clear Crossword</button>
                             <button onclick="checkCrossword(grid, positions)">&nbsp;&nbsp;Check Crossword</button>
                             <button onclick="revealCrossword(grid, positions)">&nbsp;&nbsp;Reveal Crossword</button>
@@ -79,10 +79,10 @@
             </td>
             <td>
                 <div id="csvEditorContainer" class="hidden">
-			<table id='csvTable'>
+			<table id='csvTable' class="editor">
 				<tr>
-					<td contentEditable>Term</td>
-					<td contentEditable>Definition</td>
+					<td contentEditable class="editor">Term</td>
+					<td contentEditable class="editor">Definition</td>
 				</tr>
 			</table>
                 </div>
