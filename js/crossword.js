@@ -296,7 +296,7 @@ function findWordPosition(word) {
 function makeCrossword(terms) {
 
   remainingWords = [];
-  grid = initializeGrid(20, 20);
+  grid = initializeGrid(25, 25);
   let word = terms[Math.floor(Math.random() * terms.length)];
   //find longest word in terms
 /*  for (let term of terms) {
@@ -549,10 +549,21 @@ function makeEditableCrossword(grid) {
       // in the same row if the word is horizontal. If the word is vertical, the focus should
       // move to the previous input field in the same column 
       input.addEventListener('keydown', function(event) {
-	  if (event.key === 'Tab') {
+	  // if the key is a tab or enter key, move the focus to the next word in the grid
+	  // if shift is pressed, move the focus to the previous word in the grid
+	  
+	  if (event.key === 'Tab' || event.key === 'Enter') {
+		  
 		  //find the next word in the grid and set the direction to the direction of the word
 		  //if the direction of the word is both, set the direction to horizontal
-	    let nextInput = getNextWordElement(grid);
+            // if shift is pressed, move the focus to the previous word in the grid
+	    let nextInput;
+		  console.log(event.shiftKey);
+	    if (event.shiftKey) {
+	       nextInput = getNextWordElement(grid,'previous');
+	    } else {
+	       nextInput = getNextWordElement(grid,'next');
+	    }
 		  next(nextInput, direction);
 		  priorDirection = null;
 		  //get active element
@@ -900,15 +911,21 @@ function revealCrossword(grid, positions) {
   }
 }
 
-function getNextWordElement(grid) {
+function getNextWordElement(grid, nextOrPrevious) {
   let nextInput;
   let number = numbers2[document.activeElement.id];
-  let nextNumber = number + 1;
+  let nextNumber;
+  if (nextOrPrevious === 'next') {
+     nextNumber = number + 1;
+  } else {
+     nextNumber = number - 1;
+  }
   for (let word in terms) {
     if (wordNumber[terms[word]] === nextNumber) {
       let position = findWordPosition(terms[word]);
       let column = position.column;
       let row = position.row;
+      priorDirection = position.direction;
       let direction=getDirection(grid, row, column);
       direction = position.direction;
       if (direction === 'horizontal') {
