@@ -137,7 +137,6 @@ function addRow() {
 saveRow = function(event) {
   let cell = event.target;
   row = cell.parentElement;
-	//console.log(row);
 }
 
 function addColumn() {
@@ -418,6 +417,9 @@ function generateMathExpression(row) {
 
 // create an icon on the end of each row to delete the row
 // also create an icon on the end of each row to insert a row above the row
+// enable the user to tab to the icons and press enter to delete or insert a row
+// use a trash can icon for delete and a plus icon for insert
+
 function addDeleteRowIcon(row) {
   let deleteIcon = document.createElement('span');
   deleteIcon.textContent = '❌';
@@ -453,4 +455,97 @@ function insertRow(row) {
   addDeleteRowIcon(newRow);
 }
 
+// create a function to sort the table by a list of columns
+// the function should take a list of column headers as an argument
+// the function should provide a dialog to the user to select the columns to sort by
+// the function should sort the table by the selected columns
+// the parameters should be a list of objects with a column name and a sort order
+// the sort order should be 'asc' or 'desc'
+// the function should sort the table with the selected columns in the selected order
+// the function should sort the table by the first column in the list first
+// then by the second column in the list if the first column is equal
+// then by the third column in the list if the first and second columns are equal
+// and so on
+// this has a bug where it puts the first row at the end of the table
 
+function sortTable(selectedColumns) {
+  let table = document.querySelector('#csvEditorContainer table');
+  let headerRow = table.rows[0];
+  let rows = Array.from(table.rows).slice(1);
+  rows.sort(function(a, b) {
+    for (let column of selectedColumns) {
+      let columnIndex = Array.from(headerRow.cells).findIndex(cell => cell.textContent === column.columnName);
+      let aValue = a.cells[columnIndex].textContent;
+      let bValue = b.cells[columnIndex].textContent;
+      // replace the letters that have accents, umlauts, etc. with the base letter for comparison
+      aValue = aValue.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      bValue = bValue.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (aValue < bValue) {
+	if (column.sortOrder === 'asc') {
+	  return -1;
+	} else {
+	  return 1;
+	}
+      } else if (aValue > bValue) {
+	if (column.sortOrder === 'asc') {
+	  return 1;
+	} else {
+	  return -1;
+	}
+      }
+    }
+    return 0;
+  });
+  
+  for (let row of rows) {
+    table.appendChild(row);
+  }
+}
+
+// create a function to add a dialog with a row for each column and a dropdown on each row to select the sort order
+// the rows in the dialog should be draggable so that the user can change the order of the sort
+// the dialog should be large and in the center of the screen
+// there should be arrows to move the rows up and down
+// there should be a button to sort the table
+// and a button to cancel the sort
+// the font size should be large enough to read easily
+// the dialog should be styled nicely
+function selectColumnsToSortBy() {
+  let table = document.querySelector('#csvEditorContainer table');
+  let headerRow = table.rows[0];
+  let dialog = document.createElement('div');
+  dialog.style.position = 'absolute';
+  dialog.style.top = '50%';
+  dialog.style.left = '50%';
+  dialog.style.transform = 'translate(-50%, -50%)';
+  dialog.style.backgroundColor = 'white';
+  dialog.style.padding = '20px';
+  dialog.style.border = '1px solid black';
+  dialog.style.borderRadius = '10px';
+  dialog.style.zIndex = '1000';
+  dialog.style.fontSize = '20px';
+  let tableBody = document.createElement('div');
+  dialog.appendChild(tableBody);
+  for (let cell of headerRow.cells) {
+    let row = document.createElement('div');
+    tableBody.appendChild(row);
+    let columnName = document.createElement('span');
+    columnName.textContent = cell.textContent;
+    row.appendChild(columnName);
+    let sortOrder = document.createElement('select');
+    row.appendChild(sortOrder);
+    let ascOption = document.createElement('option');
+    ascOption.textContent = 'Ascending';
+    sortOrder.appendChild(ascOption);
+    let descOption = document.createElement('option');
+    descOption.textContent = 'Descending';
+    sortOrder.appendChild(descOption);
+  }
+  let sortButton = document.createElement('button');
+  sortButton.textContent = 'Sort';
+  dialog.appendChild(sortButton);
+  let cancelButton = document.createElement('button');
+  cancelButton.textContent = 'Cancel';
+  dialog.appendChild(cancelButton);
+  document.body.appendChild(dialog);
+}

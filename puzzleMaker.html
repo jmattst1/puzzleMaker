@@ -20,12 +20,15 @@
         }
 
         function showCSVEditor() {
+	    // show the csv editor when the user clicks the csv editor button
+	    // hide the crossword puzzle when the user clicks the csv editor button
             document.getElementById("csvEditorContainer").classList.add("visible");
             document.getElementById("csvEditorContainer").classList.remove("hidden");
             document.getElementById("crossword").classList.add("hidden");
             document.getElementById("crossword").classList.remove("visible");
             document.getElementById("crossword-submenu").classList.add("hidden")
-            document.getElementById("csv-submenu").classList.toggle("hidden");
+	    document.getElementById("crossword-submenu").classList.remove("visible");
+            document.getElementById("csv-submenu").classList.toggle("visible");
         }
 
         function showCrossword() {
@@ -34,6 +37,7 @@
             document.getElementById("csvEditorContainer").classList.add("hidden");
             document.getElementById("csvEditorContainer").classList.remove("visible");
             document.getElementById("csv-submenu").classList.add("hidden");
+            document.getElementById("csv-submenu").classList.remove("visible");
             document.getElementById("crossword-submenu").classList.toggle("visible");
         }
     </script>
@@ -67,6 +71,7 @@
                             <button onclick="pasteText()">&nbsp;&nbsp;Paste Text</button>
 			    <button onclick="copyUrl()">&nbsp;&nbsp;Copy URL</button>
 			    <button onclick="generateMathExpression(row)">&nbsp;&nbsp;Generate Math<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expression</button> 
+			    <!--button onclick="selectColumnsToSortBy()">&nbsp;&nbsp;Sort</button-->
 			</div> <button onclick="showCrossword()">Crossword</button>
                         <div id="crossword-submenu" class="hidden">
 				<button onclick="grid=generateCrossword()">&nbsp;&nbsp;Generate<br>&nbsp;&nbsp;&nbsp;&nbsp;Crossword</button>
