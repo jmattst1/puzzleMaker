@@ -278,13 +278,32 @@ function pasteText() {
                 td.addEventListener('mouseover', handleMouseOver);
                 td.addEventListener('mouseup', handleMouseUp);
                 td.addEventListener('blur', saveRow); 
-      }
-      addInsertRowIcon(tr);
-      addDeleteRowIcon(tr);
+      }    
+    addInsertRowIcon(tr);
+    addDeleteRowIcon(tr);
     }
   });
 }
 
+function parseTabDelimited(value) {
+    let rows = value.split('\n');
+    let table = document.querySelector('#csvEditorContainer table');
+    for (let i = 0; i < rows.length; i++) {
+      let cells = rows[i].split('\t');
+      let tr = table.insertRow(-1);
+      for (let j = 0; j < cells.length; j++) {
+	let td = tr.insertCell(-1);
+        td.contentEditable = 'true';
+	td.textContent = cells[j];
+                td.addEventListener('mousedown', handleMouseDown);
+                td.addEventListener('mouseover', handleMouseOver);
+                td.addEventListener('mouseup', handleMouseUp);
+                td.addEventListener('blur', saveRow); 
+      }
+      addInsertRowIcon(tr);
+      addDeleteRowIcon(tr);
+    }
+  };
 // create a function to read the text from the csv editor and make a tab-delimited string
 // the function should return the tab-delimited string
 function readText() {
@@ -293,12 +312,10 @@ function readText() {
   for (let i = 0; i < table.rows.length; i++) {
     let row = table.rows[i];
     for (let j = 0; j < row.cells.length; j++) {
-      let cell = row.cells[j].textContent.toLowerCase();
-      if (cell !== 'term' && cell !== 'definition') continue;
-         text += row.cells[j].textContent;
-         if (j < row.cells.length - 1) {
-	   text += '\t';
-         }
+      text += row.cells[j].textContent;
+      if (j < row.cells.length - 1) {
+	text += '\t';
+      }
     }
     if (i < table.rows.length - 1) {
       text += '\n';
