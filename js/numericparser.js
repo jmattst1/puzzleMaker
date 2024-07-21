@@ -92,7 +92,7 @@ function generateExpression(depth = 1) {
         const right = generateSubExpression(currentDepth - 1);
 
         if (Math.random() > 0.5) {
-            return `(${left} ${operator} ${right})`;
+            return `${left} ${operator} ${right}`;
         } else {
             return `${left} ${operator} ${right}`;
         }
