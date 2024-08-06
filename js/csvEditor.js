@@ -278,11 +278,40 @@ function pasteText() {
                 td.addEventListener('mouseover', handleMouseOver);
                 td.addEventListener('mouseup', handleMouseUp);
                 td.addEventListener('blur', saveRow); 
-      }    
-    addInsertRowIcon(tr);
-    addDeleteRowIcon(tr);
+      }
+      addInsertRowIcon(tr);
+      addDeleteRowIcon(tr);
     }
   });
+}
+
+// create a function to read the text from the csv editor and make a tab-delimited string
+// the function should return the tab-delimited string
+function readText() {
+  let table = document.querySelector('#csvEditorContainer table');
+  let text = '';
+  for (let i = 0; i < table.rows.length; i++) {
+    let row = table.rows[i];
+    for (let j = 0; j < row.cells.length; j++) {
+      let cell = row.cells[j].textContent.toLowerCase();
+      if (cell !== 'term' && cell !== 'definition') continue;
+         text += row.cells[j].textContent;
+         if (j < row.cells.length - 1) {
+	   text += '\t';
+         }
+    }
+    if (i < table.rows.length - 1) {
+      text += '\n';
+    }
+  }
+  return text;
+}
+
+// create a function to create a url parameter from the tab-delimited string
+function createUrlParameter() {
+  let text = readText();
+  let urlParameter = tabDelimitedStringToUrlParameter(text, 'tabDelimitedString');
+  return urlParameter;
 }
 
 function parseTabDelimited(value) {
@@ -304,33 +333,6 @@ function parseTabDelimited(value) {
       addDeleteRowIcon(tr);
     }
   };
-// create a function to read the text from the csv editor and make a tab-delimited string
-// the function should return the tab-delimited string
-function readText() {
-  let table = document.querySelector('#csvEditorContainer table');
-  let text = '';
-  for (let i = 0; i < table.rows.length; i++) {
-    let row = table.rows[i];
-    for (let j = 0; j < row.cells.length; j++) {
-      text += row.cells[j].textContent;
-      if (j < row.cells.length - 1) {
-	text += '\t';
-      }
-    }
-    if (i < table.rows.length - 1) {
-      text += '\n';
-    }
-  }
-  return text;
-}
-
-// create a function to create a url parameter from the tab-delimited string
-function createUrlParameter() {
-  let text = readText();
-  let urlParameter = tabDelimitedStringToUrlParameter(text, 'tabDelimitedString');
-  return urlParameter;
-}
-
 // create a function to make a url from the url parameter
 // the function should return the url
 function makeUrl() {
@@ -413,8 +415,6 @@ function generateMathExpression(row) {
   let definitionCell = lastRow.cells[definitionColIndex];
   let answer = parser.parse();
   definitionCell.textContent = answer;
-  addInsertRowIcon(lastRow);
-  addDeleteRowIcon(lastRow);
 }
 
 // create an icon on the end of each row to delete the row

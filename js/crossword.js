@@ -497,9 +497,11 @@ function selectAll(target) {
 let numbers = [];
 
 function makeEditableCrossword(grid) {
+	let pre = document.createElement('pre');
     let table = document.createElement('table');
 	for (let column = 0; column < grid[0].length; column++) {
         let tr = document.createElement('tr');
+	
     for (let row = 0; row < grid.length; row++) {
           let cell = grid[row][column];
           let td = document.createElement('td');
@@ -674,49 +676,74 @@ function makeEditableCrossword(grid) {
 	   let number = numbers[row + "." + column];
 	   let innerTable = document.createElement('table');
 	   let innerTr1 = document.createElement('tr');
-	   let innerTd1 = document.createElement('td');
-           let innerTd2 = document.createElement('td');
+	   let tlTd = document.createElement('td');
+           let topTd = document.createElement('td');
+           let trTd = document.createElement('td');
+           let blTd= document.createElement('td');
+           let botTd = document.createElement('td');
+           let brTd = document.createElement('td');
+               brTd.innerText = 'xx'
            // add a style to make td cell shrink to fit the content
-           // add a style to innerTd1 to make the number bold
-	   innerTd1.style.fontWeight = 'bold';
-	   // add a style to innerTd1 to make the cell smaller
-	   innerTd1.style.fontSize = 'smallest';
+           // add a style to tlTd to make the number bold
+	   tlTd.style.fontWeight = 'bold';
+	   // add a style to tlTd to make the cell smaller
+	   tlTd.style.fontSize = 'smallest';
 	   let innerTr2 = document.createElement('tr');
-           let innerTd3 = document.createElement('td');
+           let lTd = document.createElement('td');
            
-	   let innerTd4 = document.createElement('td');
-           innerTd4.style.align = 'center';
-	   innerTd4.style.fontSize = 'largest';
-	   innerTd1.textContent = number===undefined ? 'x' : number;
-	   if (innerTd1.textContent === 'x') {
+	   let cTd = document.createElement('td');
+	   let rTd = document.createElement('td');
+           cTd.style.align = 'center';
+	   cTd.style.fontSize = 'largest';
+	   tlTd.innerText = number===undefined ? 'xx' :  number>9? number : ' ' +number;
+           tlTd.style.align = 'left';
+	   if (tlTd.textContent === 'xx') {
 		   //make the cell with the number invisible if the cell is empty
-		   //add a style to innerTd1 to make the cell with the number invisible
-		   //add a style to innerTd1 to make the cell with the number hidden
-		   //add a style to innerTd1 to make the cell with the number not visible
+		   //add a style to tlTd to make the cell with the number invisible
+		   //add a style to tlTd to make the cell with the number hidden
+		   //add a style to tlTd to make the cell with the number not visible
 		   //make the column invisible
 		   if (cell.value !== '~') {
-			   innerTd1.style.visibility = 'hidden';
+			   tlTd.style.visibility = 'hidden';
 			   
 		   }
-		   innerTd1.backgroundColor = 'black';
-		   innerTd1.color = 'black';
+		   tlTd.backgroundColor = 'black';
+		   tlTd.color = 'black';
 
 	   }
 		if (cell.value === '~') {
-		   innerTd2.style.color = 'black';
-		   innerTd1.classList.add('crossword-cell-empty');
-		   innerTd2.classList.add('crossword-cell-empty');
-		   innerTd3.classList.add('crossword-cell-empty');
-		   innerTd4.classList.add('crossword-cell-empty');
-
+		   tlTd.style.color = 'black';
+		   topTd.style.color = 'black';
+		   trTd.style.color = 'black';
+		   lTd.style.color = 'black';
+		   cTd.style.color = 'black';
+		   rTd.style.color = 'black';
+		   blTd.style.color = 'black';
+		   botTd.style.color = 'black';
+		   brTd.style.color = 'black';
+		   tlTd.classList.add('crossword-cell-empty');
+		   topTd.classList.add('crossword-cell-empty');
+		   trTd.classList.add('crossword-cell-empty');
+		   lTd.classList.add('crossword-cell-empty');
+		   cTd.classList.add('crossword-cell-empty');
+		   rTd.classList.add('crossword-cell-empty');
+		   blTd.classList.add('crossword-cell-empty');
+		   botTd.classList.add('crossword-cell-empty');
+		   brTd.classList.add('crossword-cell-empty');
 		}
-	   innerTd4.appendChild(input);
-	   innerTr1.appendChild(innerTd1);
-           innerTr1.appendChild(innerTd2);
-           innerTr2.appendChild(innerTd3);
-	   innerTr2.appendChild(innerTd4);
+	   cTd.appendChild(input);
+	   let innerTr3 = document.createElement('tr');
+	   innerTr1.appendChild(tlTd);
+           innerTr1.appendChild(topTd);
+           innerTr1.appendChild(trTd);
+           innerTr2.appendChild(lTd);
+	   innerTr2.appendChild(cTd);
+           innerTr2.appendChild(rTd);
+           innerTr3.appendChild(blTd);
+           innerTr3.appendChild(botTd);
+           innerTr3.appendChild(brTd);
            // add a style to innerTd1 to make the cell width of the cell with the number smaller
-           // add a style to innerTd4 to make the cell width of the cell with the input field larger
+           // add a style to cTd to make the cell width of the cell with the input field larger
 	   
 	   innerTable.appendChild(innerTr1);
 	   innerTable.appendChild(innerTr2);
@@ -733,7 +760,8 @@ function makeEditableCrossword(grid) {
   let crosswordContainer = document.getElementById('crosswordContainer');
   // clear the crosswordContainer div before adding the table
   crosswordContainer.innerHTML = '';
-  crosswordContainer.appendChild(table);
+  pre.appendChild(table);
+  crosswordContainer.appendChild(pre);
 }
 
 // write a function to check the answers of the crossword puzzle
@@ -957,7 +985,7 @@ function displayDefinitions(terms, definitions, grid, words) {
   let verticalList = document.createElement('ul');
   let column = -1;
   let number = 0;
-	for (let column = 0; column < grid[0].length; column++) {
+      for (let column = 0; column < grid[0].length; column++) {
 	for (let row = 0; row < grid.length; row++) {
 	let cell = grid[row][column];
 	
@@ -984,7 +1012,7 @@ function displayDefinitions(terms, definitions, grid, words) {
 		verticalList.appendChild(li);
 	      }
 	 }
-	                 numbers2[row + "." + column] = number;
+	 numbers2[row + "." + column] = number;
       }
     }
   }
@@ -995,6 +1023,7 @@ function displayDefinitions(terms, definitions, grid, words) {
   let cluesContainer = document.getElementById('cluesContainer');
   cluesContainer.innerHTML = '';
   cluesContainer.appendChild(definitionsDiv);
+  // add a style to make definitionsDiv hover before the element with the focus
   return grid;
 }
 
@@ -1026,13 +1055,15 @@ function generateCrossword() {
         return;
     }
 
+    terms = [];
+    definitions = [];
     for (let i = 1; i < table.rows.length; i++) {
 	 try{	
            const term = table.rows[i].cells[termColIndex].textContent.trim();
            const definition = table.rows[i].cells[defColIndex].textContent.trim();
            if (term && definition && !(term==='Term' && definition==='Definition')) {
-               terms.push(term);
-               definitions.push(definition);
+	      terms.push(term);
+              definitions.push(definition);
            }
 	 } catch(e) {
 	 }
