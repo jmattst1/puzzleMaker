@@ -186,7 +186,7 @@ function handleMouseDown(event) {
     startCell = event.target;
     clearSelection();
     event.target.classList.add('selected');
-    event.preventDefault();
+  //  event.preventDefault();
 }
 
 function handleMouseOver(event) {
